@@ -27,7 +27,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Récupération des notes (vulnérable à SQL Injection)
+// Récupération des notes
 app.get('/grades', (req, res) => {
   const { username } = req.query;
   const query = `SELECT * FROM grades WHERE username = '${username}'`;

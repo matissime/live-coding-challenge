@@ -9,6 +9,5 @@
       }
     },
     "forwardPorts": [3306],
-    "postCreateCommand": "echo 'Dev container ready!'",
     "remoteUser": "root"
   }

@@ -37,22 +37,22 @@ L’usage d’Internet est autorisé pour la recherche, tout comme les outils d�
 
 ```javascript
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const app = express();
 app.use(express.json());
 
 // Connexion à la base de données
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'student_db'
-});
-
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Connected to the database');
-});
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'student_db'
+  });
+  
+  db.connect((err) => {
+    if (err) throw err;
+    console.log('Connected to the database');
+  });
 
 // Inscription d'un utilisateur
 app.post('/register', (req, res) => {
@@ -65,15 +65,24 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Récupération des notes (vulnérable à SQL Injection)
+// Récupération des notes
 app.get('/grades', (req, res) => {
   const { username } = req.query;
   const query = `SELECT * FROM grades WHERE username = '${username}'`;
+  console.log('Executing query:', query);
   
-  db.query(query, (err, result) => {
-    if (err) throw err;
-    res.json(result);
-  });
+  try {
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error('SQL Error:', err.message);
+        return res.status(500).json({ error: err.message, query: query });
+      }
+      res.json(result);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Démarrage du serveur
@@ -86,17 +95,17 @@ app.listen(3000, () => {
 
 ## **🚨 Vulnérabilité :**
 
-L’application est vulnérable à une **SQL Injection**. Le problème vient de la manière dont les données (comme username) sont insérées directement dans la requête SQL.
+L’application est vulnérable à une **SQL Injection**.
 
 
 
-Cela permet à un utilisateur malveillant d’injecter du code SQL dans l’input, ce qui pourrait compromettre la sécurité de l’application.
+Cela permet à un utilisateur malveillant d’injecter du code SQL via les input, ce qui pourrait compromettre la sécurité de l’application.
 
 
 
 ## **🎯 Objectifs du challenge :**
 
-1. **Corriger la vulnérabilité SQL Injection** : Utilise des requêtes préparées ou des paramètres liés pour sécuriser la requête SQL.
+1. **Corriger la vulnérabilité SQL Injection** : Utilise les bonnes pratiques SQL lié au développement web pour corriger la faille dans le code source.
 2. **Ajouter une fonctionnalité** permettant à un utilisateur d’ajouter une nouvelle note de manière sécurisée via un endpoint **POST /grades**.
 3. **Valider les entrées** : Assure-toi que le grade est bien un nombre valide et inférieur ou égale à 20 avant de l’ajouter à la base de données.
 
