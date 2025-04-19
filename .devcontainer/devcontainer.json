@@ -2,6 +2,7 @@
     "name": "Live Coding Challenge",
     "dockerComposeFile": "docker-compose.yml",
     "service": "db",
+    "workspaceFolder": "/workspaces/live-coding-challenge",
     "features": {
       "ghcr.io/devcontainers/features/node:1": {
         "version": "18"
