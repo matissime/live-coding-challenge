@@ -54,9 +54,9 @@ app.get('/grades', (req, res) => {
       
      }
 
-    const query ='INSERT USERNAME ,grades (username,grade) VALUES (?,?)'; 
+     const query = 'INSERT INTO grades (username, grade) VALUES (?, ?)';
 
-      db.query = (query, [username, grade],(err, result)=>{
+     db.query(query, [username, grade], (err, result) => {
         if(err) throw err ;
 
       res.status(201).json({message: 'grade ajouter',id:result.insertId});
